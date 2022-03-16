@@ -22,7 +22,7 @@ let package = Package(
         .target(
             name: "SwiftyFrame",
             dependencies: [],
-            path: "Sources")
+            path: "Sources"),
         .testTarget(
             name: "SwiftyFrameTests",
             dependencies: ["SwiftyFrame"]),

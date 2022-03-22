@@ -10,18 +10,20 @@ import UIKit
 public class FrameMaker {
     
     unowned let view: UIView
-    var handlers =  [() -> ()]()
+    
+    lazy var realizedVerticalRelations = ContiguousArray<VerticalRelationType>()
+    lazy var realizedHorizontalRelations = ContiguousArray<HorizontalRelationType>()
     
     lazy var verticalRelation = VerticalRelation(view: view)
     lazy var horizontalRelation = HorizontalRelation(view: view)
-    var configurationBlock: ((FrameMaker) -> ())
+    
+    lazy var defferedOperations = ContiguousArray<Operation>()
     
     var safeAreaInset: UIEdgeInsets {
         view.window?.safeAreaInsets ?? .zero
     }
     
-    init(view: UIView, configurationBlock: @escaping ((FrameMaker) -> ())) {
+    init(view: UIView) {
         self.view = view
-        self.configurationBlock = configurationBlock
     }
 }

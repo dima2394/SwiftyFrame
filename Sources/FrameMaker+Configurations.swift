@@ -9,8 +9,11 @@ import UIKit
 
 public extension FrameMaker {
     
-    static func configure(view: UIView, configurationBlock: @escaping (FrameMaker) -> Void) {
-        let maker = FrameMaker(view: view, configurationBlock: configurationBlock)
+    static func configure(view: UIView, configurationBlock: ConfigurationBlock) {
+        let maker = FrameMaker(view: view)
+        
         configurationBlock(maker)
+        
+        maker.defferedOperations.forEach { $0.start() }
     }
 }

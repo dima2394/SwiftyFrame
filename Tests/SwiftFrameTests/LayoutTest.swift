@@ -8,7 +8,7 @@ final class LayoutTest: BaseTest {
     
     func testEdgeLayout() {
         let insets: UIEdgeInsets = .init(top: 15, left: 15, bottom: 15, right: 15)
-        firstView.configureFrame {
+        firstView.frame {
             $0.edges(insets)
         }
         XCTAssertEqual(firstView.frame, CGRect(x: 15, y: 15, width: 770, height: 770))

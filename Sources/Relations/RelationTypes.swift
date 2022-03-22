@@ -8,11 +8,13 @@ protocol Relation { }
 public enum VerticalRelationType: Relation {
     case top
     case bottom
+    case centerY
 }
 
 public enum HorizontalRelationType: Relation {
     case left
     case right
+    case centerX
 }
 
 public enum DimensionRelationType: Relation {

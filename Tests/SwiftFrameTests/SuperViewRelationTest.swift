@@ -10,7 +10,7 @@ final class SuperViewRelationTest: BaseTest {
     func testLeftToRightRelation() {
         
         let etalonDimensions = CGRect(x: 0, y: 0, width: 800, height: 800)
-        firstView.configureFrame {
+        firstView.frame {
             $0.top().bottom()
             $0.left().right()
         }
@@ -20,7 +20,7 @@ final class SuperViewRelationTest: BaseTest {
     func testLayoutWithInsets() {
         
         let etalonDimensions = CGRect(x: 15, y: 15, width: 770, height: 770)
-        firstView.configureFrame {
+        firstView.frame {
             $0.top(inset: self.insets.top)
             $0.left(inset: self.insets.left)
             $0.right(inset: self.insets.right)
@@ -32,7 +32,7 @@ final class SuperViewRelationTest: BaseTest {
     func testRightToLeftRelation() {
         
         let etalonDimensions = CGRect(x: 0, y: 0, width: 800, height: 800)
-        firstView.configureFrame {
+        firstView.frame {
             $0.top().bottom()
             $0.right().left()
         }
@@ -42,7 +42,7 @@ final class SuperViewRelationTest: BaseTest {
     func testBottomToTopRelation() {
         
         let etalonDimensions = CGRect(x: 0, y: 0, width: 800, height: 800)
-        firstView.configureFrame {
+        firstView.frame {
             $0.bottom().top()
             $0.left().right()
         }
@@ -52,7 +52,7 @@ final class SuperViewRelationTest: BaseTest {
     func testLeftToRightWithInsetsRelation() {
         
         let etalonDimensions = CGRect(x: 15, y: 0, width: 770, height: 800)
-        firstView.configureFrame {
+        firstView.frame {
             $0.top()
             $0.bottom()
             $0.left(inset: self.insets.left)
@@ -64,7 +64,7 @@ final class SuperViewRelationTest: BaseTest {
     func testRightToLeftWithInsetsRelation() {
         
         let etalonDimensions = CGRect(x: 15, y: 0, width: 770, height: 800)
-        firstView.configureFrame {
+        firstView.frame {
             $0.top()
             $0.bottom()
             $0.right(inset: self.insets.right)
@@ -76,7 +76,7 @@ final class SuperViewRelationTest: BaseTest {
     func testBottomToTopWithInsetsRelation() {
         
         let etalonDimensions = CGRect(x: 0, y: 15, width: 800, height: 770)
-        firstView.configureFrame {
+        firstView.frame {
             $0.bottom(inset: self.insets.bottom)
             $0.top(inset: self.insets.top)
             $0.left().right()

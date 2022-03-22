@@ -1,15 +1,14 @@
 //
-//  File.swift
-//  
-//
 //  Created by Dmitriy Verennik on 16.03.2022.
 //
 
 import UIKit
 
+public typealias ConfigurationBlock = (FrameMaker) -> Void
+
 public extension UIView {
     
-    func configureFrame(configurationBlock: @escaping (FrameMaker) -> Void) {
+    func frame(configurationBlock: ConfigurationBlock) {
         FrameMaker.configure(view: self, configurationBlock: configurationBlock)
     }
     
@@ -29,11 +28,11 @@ public extension UIView {
         RelationView<HorizontalRelationType>(view: self, relationType: .right)
     }
     
-    func addSubviews(_ views: [UIView]) {
-        views.forEach { addSubview($0) }
+    var centerX: RelationView<HorizontalRelationType> {
+        RelationView<HorizontalRelationType>(view: self, relationType: .centerX)
     }
-
-    func addSubviews(_ views: UIView...) {
-        views.forEach { addSubview($0) }
+    
+    var centerY: RelationView<VerticalRelationType> {
+        RelationView<VerticalRelationType>(view: self, relationType: .centerY)
     }
 }

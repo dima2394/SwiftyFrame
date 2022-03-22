@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class FrameMaker {
+public class FrameMaker {
     
     unowned let view: UIView
     var handlers =  [() -> ()]()

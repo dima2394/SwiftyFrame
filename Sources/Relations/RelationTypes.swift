@@ -1,20 +1,21 @@
 //
-//  File.swift
-//  
-//
 //  Created by Dmitriy Verennik on 16.03.2022.
 //
 
 import Foundation
 
 protocol Relation { }
-enum VerticalRelationType: Relation {
+public enum VerticalRelationType: Relation {
     case top
     case bottom
 }
 
-enum HorizontalRelationType: Relation {
+public enum HorizontalRelationType: Relation {
     case left
     case right
 }
 
+public enum DimensionRelationType: Relation {
+    case width
+    case height
+}

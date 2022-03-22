@@ -1,13 +1,10 @@
 //
-//  File.swift
-//  
-//
 //  Created by Dmitriy Verennik on 16.03.2022.
 //
 
 import UIKit
 
-final class RelationView<Relation> {
+final public class RelationView<Relation> {
     
     unowned let view: UIView
     let relationType: Relation

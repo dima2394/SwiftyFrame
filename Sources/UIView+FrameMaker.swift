@@ -7,7 +7,7 @@
 
 import UIKit
 
-extension UIView {
+public extension UIView {
     
     func configureFrame(configurationBlock: @escaping (FrameMaker) -> Void) {
         FrameMaker.configure(view: self, configurationBlock: configurationBlock)

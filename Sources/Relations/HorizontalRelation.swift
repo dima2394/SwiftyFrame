@@ -8,13 +8,16 @@
 import UIKit
 
 struct HorizontalRelation {
+    var hasX = false
     var xRect: CGFloat = 0 {
         didSet {
             var frame = view.frame
             frame.origin.x = xRect
             view.frame = frame
+            hasX = true
         }
     }
+    var hasWidth = false
     var widthRect: CGFloat = 0 {
         didSet {
             var frame = view.frame

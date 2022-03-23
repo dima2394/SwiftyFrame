@@ -30,6 +30,16 @@ public extension FrameMaker {
         return self
     }
     
+    @discardableResult
+    func topAndBottom(margin: CGFloat = 0) -> FrameMaker {
+        top(inset: margin).bottom(inset: margin)
+    }
+    
+    @discardableResult
+    func leftAndRight(margin: CGFloat = 0) -> FrameMaker {
+        left(inset: margin).right(inset: margin)
+    }
+    
     // MARK: -  Top Relation Configuration
     
     @discardableResult

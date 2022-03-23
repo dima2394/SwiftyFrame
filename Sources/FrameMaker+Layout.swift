@@ -206,6 +206,84 @@ public extension FrameMaker {
         }
         return self
     }
+    
+    // MARK: -  Center Relations
+    
+    @discardableResult
+    func center(to relationView: UIView) -> FrameMaker {
+        guard view.superview != nil else {
+            fatalError("❌ need to configure superview")
+        }
+        let center = relationView.center
+        let block = BlockOperation { [unowned view] in
+            view.center = center
+        }
+        defferedOperations.append(block)
+        return self
+    }
+    
+    @discardableResult
+    func center() -> FrameMaker {
+        guard let superview = view.superview else {
+            fatalError("❌ need to configure superview")
+        }
+        let center = superview.center
+        let block = BlockOperation { [unowned view] in
+            view.center = center
+        }
+        defferedOperations.append(block)
+        return self
+    }
+    
+    @discardableResult
+    func centerX(to relationView: RelationView<HorizontalRelationType>, offset: CGFloat = 0) -> FrameMaker {
+        guard view.superview != nil else {
+            fatalError("❌ need to configure superview")
+        }
+        let leftRect = relationView.view.frame.minX
+        let rightRect = relationView.view.frame.maxX
+        let centerX = relationView.view.center.x
+        let relationType = relationView.relationType
+        let block = BlockOperation { [unowned view] in
+            var value: CGFloat
+            switch relationType {
+            case .left:
+                value = leftRect
+            case .right:
+                value = rightRect
+            case .centerX:
+                value = centerX
+            }
+            view.center.x = value - offset
+        }
+        defferedOperations.append(block)
+        return self
+    }
+    
+    @discardableResult
+    func centerY(to relationView: RelationView<VerticalRelationType>, offset: CGFloat = 0) -> FrameMaker {
+        guard view.superview != nil else {
+            fatalError("❌ need to configure superview")
+        }
+        let topRect = relationView.view.frame.minY
+        let bottomRect = relationView.view.frame.maxY
+        let centerY = relationView.view.center.y
+        let relationType = relationView.relationType
+        let block = BlockOperation { [unowned view] in
+            var value: CGFloat
+            switch relationType {
+            case .top:
+                value = topRect
+            case .bottom:
+                value = bottomRect
+            case .centerY:
+                value = centerY
+            }
+            view.center.y = value - offset
+        }
+        defferedOperations.append(block)
+        return self
+    }
 
     // MARK: -  Size configuration
     

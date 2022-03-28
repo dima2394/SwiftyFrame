@@ -55,8 +55,8 @@ final class SuperViewRelationTest: BaseTest {
         firstView.frame {
             $0.top()
             $0.bottom()
-            $0.left(inset: self.insets.left)
-            $0.right(inset: self.insets.right)
+            $0.left(inset: insets.left)
+            $0.right(inset: insets.right)
         }
         XCTAssertEqual(firstView.frame, etalonDimensions)
     }
@@ -67,8 +67,8 @@ final class SuperViewRelationTest: BaseTest {
         firstView.frame {
             $0.top()
             $0.bottom()
-            $0.right(inset: self.insets.right)
-            $0.left(inset: self.insets.left)
+            $0.right(inset: insets.right)
+            $0.left(inset: insets.left)
         }
         XCTAssertEqual(firstView.frame, etalonDimensions)
     }
@@ -77,8 +77,8 @@ final class SuperViewRelationTest: BaseTest {
         
         let etalonDimensions = CGRect(x: 0, y: 15, width: 800, height: 770)
         firstView.frame {
-            $0.bottom(inset: self.insets.bottom)
-            $0.top(inset: self.insets.top)
+            $0.bottom(inset: insets.bottom)
+            $0.top(inset: insets.top)
             $0.left().right()
         }
         XCTAssertEqual(firstView.frame, etalonDimensions)

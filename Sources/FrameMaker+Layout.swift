@@ -31,13 +31,35 @@ public extension FrameMaker {
     }
     
     @discardableResult
-    func topAndBottom(margin: CGFloat = 0) -> FrameMaker {
-        top(inset: margin).bottom(inset: margin)
+    func edges(into view: UIView, insets: UIEdgeInsets) -> FrameMaker {
+        guard self.view.superview != nil else {
+            fatalError("❌ need to configure superview")
+        }
+        horizontalRelation.xRect = view.frame.minX + view.safeAreaInsets.left + insets.left
+        verticalRelation.yRect = view.frame.minY + view.safeAreaInsets.top + insets.top
+        horizontalRelation.widthRect = view.frame.maxX - view.frame.minX - (insets.right + insets.left)
+        verticalRelation.heightRect = view.frame.maxY - view.frame.minY - (view.safeAreaInsets.top + view.safeAreaInsets.bottom) - (insets.bottom + insets.top)
+        return self
     }
     
     @discardableResult
     func leftAndRight(margin: CGFloat = 0) -> FrameMaker {
         left(inset: margin).right(inset: margin)
+    }
+    
+    @discardableResult
+    func leftTopRight(margin: CGFloat) -> FrameMaker {
+        leftAndRight(margin: margin).top(inset: margin)
+    }
+    
+    @discardableResult
+    func topAndBottom(margin: CGFloat = 0) -> FrameMaker {
+        top(inset: margin).bottom(inset: margin)
+    }
+    
+    @discardableResult
+    func leftBottomRight(margin: CGFloat = 0) -> FrameMaker {
+        bottom(inset: margin).leftAndRight(margin: margin)
     }
     
     // MARK: -  Top Relation Configuration
@@ -166,6 +188,9 @@ public extension FrameMaker {
             horizontalRelation.xRect = relationView.view.frame.minX + inset
             realizedHorizontalRelations.append(.left)
         case .right:
+            if horizontalRelation.hasX {
+                horizontalRelation.widthRect = horizontalRelation.xRect - (relationView.view.frame.maxX + inset)
+            }
             horizontalRelation.xRect = relationView.view.frame.maxX + inset
             realizedHorizontalRelations.append(.left)
         case .centerX:
@@ -184,7 +209,7 @@ public extension FrameMaker {
     func right(to relationView: RelationView<HorizontalRelationType>, inset: CGFloat = 0) -> FrameMaker {
         switch relationView.relationType {
         case .left:
-            horizontalRelation.xRect = relationView.view.frame.maxX + inset
+            horizontalRelation.xRect = relationView.view.frame.minX + inset
             realizedHorizontalRelations.append(.left)
         case .right:
             if horizontalRelation.hasX {
@@ -214,6 +239,7 @@ public extension FrameMaker {
         } else {
             horizontalRelation.xRect = superview.frame.maxX - inset
         }
+        realizedHorizontalRelations.append(.right)
         return self
     }
     
@@ -301,6 +327,9 @@ public extension FrameMaker {
     func height(_ height: CGFloat) -> FrameMaker {
         guard view.superview != nil else {
             fatalError("❌ need to configure superview")
+        }
+        guard !verticalRelation.hasHeight else {
+            fatalError("❌ already configured height dimension")
         }
         if verticalRelation.hasY && realizedVerticalRelations.contains(.bottom) {
             verticalRelation.yRect = verticalRelation.yRect - height

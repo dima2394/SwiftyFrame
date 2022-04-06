@@ -23,4 +23,88 @@ final class LayoutTest: BaseTest {
         }
         XCTAssertEqual(firstView.frame, firstViewEtalonRect)
     }
+
+    func testTopToBottomLayout() {
+        let firstViewEtalonRect = CGRect(x: 0, y: 15, width: 0, height: 770)
+        firstView.frame {
+            $0.top(inset: 15).bottom(inset: 15)
+        }
+        XCTAssertEqual(firstView.frame, firstViewEtalonRect)
+    }
+    
+    func testVerticalLayout() {
+        let firstViewEtalonRect = CGRect(x: 0, y: 15, width: 0, height: 770)
+        firstView.frame {
+            $0.vertical(margin: 15)
+        }
+        XCTAssertEqual(firstView.frame, firstViewEtalonRect)
+    }
+    
+    func testLeftToRightLayout() {
+        let firstViewEtalonRect = CGRect(x: 15, y: 0, width: 770, height: 0)
+        firstView.frame {
+            $0.left(inset: 15).right(inset: 15)
+        }
+        XCTAssertEqual(firstView.frame, firstViewEtalonRect)
+    }
+    
+    func testHorizontalLayout() {
+        let firstViewEtalonRect = CGRect(x: 15, y: 0, width: 770, height: 0)
+        firstView.frame {
+            $0.horizontal(margin: 15)
+        }
+        XCTAssertEqual(firstView.frame, firstViewEtalonRect)
+    }
+
+    func testTopThreeSideLayout() {
+        let firstViewEtalonRect = CGRect(x: 15, y: 15, width: 770, height: 0)
+        firstView.frame {
+            $0.leftTopRight(margin: 15)
+        }
+        XCTAssertEqual(firstView.frame, firstViewEtalonRect)
+    }
+    
+    func testTopThreeSideWithHeightLayout() {
+        let firstViewEtalonRect = CGRect(x: 15, y: 15, width: 770, height: 770)
+        firstView.frame {
+            $0.leftTopRight(margin: 15).bottom(inset: 15)
+        }
+        XCTAssertEqual(firstView.frame, firstViewEtalonRect)
+    }
+    
+    func testBottomThreeSideLayout() {
+        let firstViewEtalonRect = CGRect(x: 15, y: 785, width: 770, height: 0)
+        firstView.frame {
+            $0.leftBottomRight(margin: 15)
+        }
+        XCTAssertEqual(firstView.frame, firstViewEtalonRect)
+    }
+    
+    func testBottomThreeSideWithHeightLayout() {
+        let firstViewEtalonRect = CGRect(x: 15, y: 15, width: 770, height: 770)
+        firstView.frame {
+            $0.leftBottomRight(margin: 15).top(inset: 15)
+        }
+        XCTAssertEqual(firstView.frame, firstViewEtalonRect)
+    }
+    
+    func testCenterToSuperview() {
+        let firstViewEtalonRect = CGRect(x: 350, y: 350, width: 100, height: 100)
+        firstView.frame {
+            $0.squareSize(100).center()
+        }
+        
+        XCTAssertEqual(firstView.frame, firstViewEtalonRect)
+        XCTAssertEqual(firstView.center, contentView.center)
+    }
+    
+    func testCenter() {
+        let firstViewEtalonRect = CGRect(x: 350, y: 350, width: 100, height: 100)
+        firstView.frame {
+            $0.squareSize(100).center(to: contentView)
+        }
+        
+        XCTAssertEqual(firstView.frame, firstViewEtalonRect)
+        XCTAssertEqual(firstView.center, contentView.center)
+    }
 }

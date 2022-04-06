@@ -18,21 +18,34 @@ public extension FrameMaker {
     
     // MARK: -  Edges Relation Configuration
     
+    /// For edges relation inside `superview`.
+    /// - Parameter insets: margin from each side.
+    /// - Returns: FrameMaker instance for chainable syntax.
     @discardableResult
     func edges(_ insets: UIEdgeInsets) -> FrameMaker {
-        guard let superView = view.superview else {
+        guard let superView = view.superview,
+              #available(tvOS 11.0, iOS 9.0, *)
+        else {
             fatalError("❌ need to configure superview")
         }
+        
         horizontalRelation.xRect = superView.frame.minX + superView.safeAreaInsets.left + insets.left
         verticalRelation.yRect = superView.frame.minY + superView.safeAreaInsets.top + insets.top
-        horizontalRelation.widthRect = superView.frame.maxX - superView.frame.minX - (insets.right + insets.left)
         verticalRelation.heightRect = superView.frame.maxY - superView.frame.minY - (superView.safeAreaInsets.top + superView.safeAreaInsets.bottom) - (insets.bottom + insets.top)
+        horizontalRelation.widthRect = superView.frame.maxX - superView.frame.minX - (insets.right + insets.left)
         return self
     }
     
+    /// For edges relation inside `view`.
+    /// - Parameters:
+    ///   - view: superview.
+    ///   - insets: margin from each side.
+    /// - Returns: FrameMaker instance for chainable syntax.
     @discardableResult
     func edges(into view: UIView, insets: UIEdgeInsets) -> FrameMaker {
-        guard self.view.superview != nil else {
+        guard self.view.superview != nil,
+              #available(tvOS 11.0, iOS 9.0, *)
+        else {
             fatalError("❌ need to configure superview")
         }
         horizontalRelation.xRect = view.frame.minX + view.safeAreaInsets.left + insets.left
@@ -42,21 +55,49 @@ public extension FrameMaker {
         return self
     }
     
+    /// Configure Left And Right margins for view.
+    /// - Parameter margin: indent from each side. Default is `0`.
+    /// - Returns: FrameMaker instance for chainable syntax.
     @discardableResult
     func leftAndRight(margin: CGFloat = 0) -> FrameMaker {
         left(inset: margin).right(inset: margin)
     }
-    
+
+    /// Left And Right  margins configuration for view.
+    /// - Parameter margin: indent from each side. Default is `0`.
+    /// - Returns: FrameMaker instance for chainable syntax.
     @discardableResult
-    func leftTopRight(margin: CGFloat) -> FrameMaker {
-        leftAndRight(margin: margin).top(inset: margin)
+    func horizontal(margin: CGFloat = 0) -> FrameMaker {
+        left(inset: margin).right(inset: margin)
     }
     
+    /// Vertical relation configuration for view: `Top` and `Bottom`
+    /// - Parameter margin: indent from each side. Default is `0`.
+    /// - Returns: FrameMaker instance for chainable syntax.
     @discardableResult
     func topAndBottom(margin: CGFloat = 0) -> FrameMaker {
         top(inset: margin).bottom(inset: margin)
     }
     
+    /// Vertical relation configuration for view: `Top` and `Bottom`
+    /// - Parameter margin: indent from each side. Default is `0`.
+    /// - Returns: FrameMaker instance for chainable syntax.
+    @discardableResult
+    func vertical(margin: CGFloat = 0) -> FrameMaker {
+        top(inset: margin).bottom(inset: margin)
+    }
+    
+    /// "ThreeSide" relation configuration for view: `Left`,  `Top`, `Right`.
+    /// - Parameter margin: indent from each side. Default is `0`.
+    /// - Returns: FrameMaker instance for chainable syntax.
+    @discardableResult
+    func leftTopRight(margin: CGFloat = 0) -> FrameMaker {
+        leftAndRight(margin: margin).top(inset: margin)
+    }
+    
+    /// "ThreeSide" relation configuration for view: `Left`,  `Bottom`, `Right`.
+    /// - Parameter margin: indent from each side.
+    /// - Returns: FrameMaker instance for chainable syntax.
     @discardableResult
     func leftBottomRight(margin: CGFloat = 0) -> FrameMaker {
         bottom(inset: margin).leftAndRight(margin: margin)
@@ -133,7 +174,12 @@ public extension FrameMaker {
             }
             realizedVerticalRelations.append(.bottom)
         case .centerY:
-            break
+            if verticalRelation.hasY {
+                verticalRelation.heightRect = (relationView.view.center.y - inset - verticalRelation.yRect)
+            } else {
+                verticalRelation.yRect = relationView.view.center.y - inset
+            }
+            realizedVerticalRelations.append(.bottom)
         }
         return self
     }
@@ -244,7 +290,7 @@ public extension FrameMaker {
     }
     
     // MARK: -  Center Relations
-    
+    // MARK: -  Center
     @discardableResult
     func center(to relationView: UIView) -> FrameMaker {
         guard view.superview != nil else {
@@ -271,6 +317,7 @@ public extension FrameMaker {
         return self
     }
     
+    // MARK: -  Center X
     @discardableResult
     func centerX(to relationView: RelationView<HorizontalRelationType>, offset: CGFloat = 0) -> FrameMaker {
         guard view.superview != nil else {
@@ -297,6 +344,20 @@ public extension FrameMaker {
     }
     
     @discardableResult
+    func centerX(offset: CGFloat = 0) -> FrameMaker {
+        guard let superview = view.superview else {
+            fatalError("❌ need to configure superview")
+        }
+        let centerX = superview.center.x
+        let block = BlockOperation { [unowned view] in
+            view.center.x = centerX - offset
+        }
+        defferedOperations.append(block)
+        return self
+    }
+    
+    // MARK: -  Center Y
+    @discardableResult
     func centerY(to relationView: RelationView<VerticalRelationType>, offset: CGFloat = 0) -> FrameMaker {
         guard view.superview != nil else {
             fatalError("❌ need to configure superview")
@@ -320,6 +381,19 @@ public extension FrameMaker {
         defferedOperations.append(block)
         return self
     }
+    
+    @discardableResult
+    func centerY(offset: CGFloat = 0) -> FrameMaker {
+        guard let superview = view.superview else {
+            fatalError("❌ need to configure superview")
+        }
+        let centerY = superview.center.y
+        let block = BlockOperation { [unowned view] in
+            view.center.y = centerY - offset
+        }
+        defferedOperations.append(block)
+        return self
+    }
 
     // MARK: -  Size configuration
     
@@ -339,6 +413,22 @@ public extension FrameMaker {
     }
 
     @discardableResult
+    func height(equal to: UIView) -> FrameMaker {
+        guard view.superview != nil else {
+            fatalError("❌ need to configure superview")
+        }
+        guard !verticalRelation.hasHeight else {
+            fatalError("❌ already configured height dimension")
+        }
+        let heightDimension = to.bounds.height
+        if verticalRelation.hasY && realizedVerticalRelations.contains(.bottom) {
+            verticalRelation.yRect = verticalRelation.yRect - heightDimension
+        }
+        verticalRelation.heightRect = heightDimension
+        return self
+    }
+
+    @discardableResult
     func width(_ width: CGFloat) -> FrameMaker {
         guard view.superview != nil else {
             fatalError("❌ need to configure superview")
@@ -347,6 +437,19 @@ public extension FrameMaker {
             horizontalRelation.xRect = horizontalRelation.xRect - width
         }
         horizontalRelation.widthRect = width
+        return self
+    }
+    
+    @discardableResult
+    func width(equal to: UIView) -> FrameMaker {
+        guard view.superview != nil else {
+            fatalError("❌ need to configure superview")
+        }
+        let widthDimension = to.bounds.width
+        if horizontalRelation.hasX && realizedHorizontalRelations.contains(.right) {
+            horizontalRelation.xRect = horizontalRelation.xRect - widthDimension
+        }
+        horizontalRelation.widthRect = widthDimension
         return self
     }
 

@@ -11,7 +11,7 @@ public extension Collection where Element == UIView {
     @discardableResult
     func container(in view: UIView, configurationBlock: () -> Void) -> UIView {
         let containerView = UIView(frame: .zero)
-        containerView.addSubviews(self.reversed())
+        containerView.addSubviews(Array(self))
         view.addSubview(containerView)
         configurationBlock()
         let dimensions = configureContainer(for: containerView)
@@ -34,33 +34,53 @@ public extension Collection where Element == UIView {
     }
 }
 
+// MARK: -  FrameMaker
+
 public extension UIView {
     
+    /// Let's configure view's frame with SwiftyFrame.
+    /// - Parameter configurationBlock: configure view frame `here`...`inside`...'
     func frame(configurationBlock: ConfigurationBlock) {
         FrameMaker.configure(view: self, configurationBlock: configurationBlock)
     }
     
+    /// Top Relation of View
     var top: RelationView<VerticalRelationType> {
         RelationView<VerticalRelationType>(view: self, relationType: .top)
     }
     
+    /// Bottom Relation of View
     var bottom: RelationView<VerticalRelationType> {
         RelationView<VerticalRelationType>(view: self, relationType: .bottom)
     }
     
+    /// Left Relation of View
     var left: RelationView<HorizontalRelationType> {
         RelationView<HorizontalRelationType>(view: self, relationType: .left)
     }
     
+    /// Right Relation of View
     var right: RelationView<HorizontalRelationType> {
         RelationView<HorizontalRelationType>(view: self, relationType: .right)
     }
     
+    /// Center X Relation of View
     var centerX: RelationView<HorizontalRelationType> {
         RelationView<HorizontalRelationType>(view: self, relationType: .centerX)
     }
     
+    /// Center Y Relation of View
     var centerY: RelationView<VerticalRelationType> {
         RelationView<VerticalRelationType>(view: self, relationType: .centerY)
+    }
+    
+    /// Height Relation of View
+    var height: RelationView<DimensionRelationType> {
+        RelationView<DimensionRelationType>(view: self, relationType: .height)
+    }
+    
+    /// Width Relation of View
+    var width: RelationView<DimensionRelationType> {
+        RelationView<DimensionRelationType>(view: self, relationType: .width)
     }
 }

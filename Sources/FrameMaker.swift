@@ -20,7 +20,10 @@ public class FrameMaker {
     lazy var defferedOperations = ContiguousArray<Operation>()
     
     var safeAreaInset: UIEdgeInsets {
-        view.window?.safeAreaInsets ?? .zero
+        guard #available(tvOS 11.0, iOS 9.0, *) else {
+            return .zero
+        }
+        return view.window?.safeAreaInsets ?? .zero
     }
     
     init(view: UIView) {

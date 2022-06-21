@@ -107,4 +107,38 @@ final class LayoutTest: BaseTest {
         XCTAssertEqual(firstView.frame, firstViewEtalonRect)
         XCTAssertEqual(firstView.center, contentView.center)
     }
+    
+    func testCenterYTopRelation() {
+        let firstViewEtalonRect = CGRect(x: 350, y: 350, width: 100, height: 100)
+        firstView.frame {
+            $0.squareSize(100).center(to: contentView)
+        }
+        XCTAssertEqual(firstView.frame, firstViewEtalonRect)
+        
+        let secondViewEtalonRect = CGRect(x: 350, y: 400, width: 100, height: 200)
+        secondView.frame {
+            $0.top(to: firstView.centerY)
+            $0.right(to: firstView.right)
+            $0.left(to: firstView.left)
+            $0.height(200)
+        }
+        XCTAssertEqual(secondView.frame, secondViewEtalonRect)
+    }
+    
+    func testCenterYBottomRelation() {
+        let firstViewEtalonRect = CGRect(x: 350, y: 350, width: 100, height: 100)
+        firstView.frame {
+            $0.squareSize(100).center(to: contentView)
+        }
+        XCTAssertEqual(firstView.frame, firstViewEtalonRect)
+        
+        let secondViewEtalonRect = CGRect(x: 350, y: 200, width: 100, height: 200)
+        secondView.frame {
+            $0.bottom(to: firstView.centerY)
+            $0.right(to: firstView.right)
+            $0.left(to: firstView.left)
+            $0.height(200)
+        }
+        XCTAssertEqual(secondView.frame, secondViewEtalonRect)
+    }
 }

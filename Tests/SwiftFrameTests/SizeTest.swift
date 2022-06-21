@@ -21,4 +21,13 @@ final class SizeTest: BaseTest {
         secondView.frame { $0.size(equalTo: firstView) }
         XCTAssertEqual(firstView.bounds.size, secondView.bounds.size)
     }
+    
+    func testEqualDimensionsWithMultiplier() {
+        firstView.frame { $0.squareSize(200) }
+        secondView.frame {
+            $0.height(to: firstView.width, multiplier: 1.5)
+            $0.width(to: firstView.height, multiplier: 1.5)
+        }
+        XCTAssertEqual(secondView.bounds.size, CGSize(width: 300, height: 300))
+    }
 }

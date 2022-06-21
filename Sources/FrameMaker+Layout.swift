@@ -395,8 +395,9 @@ public extension FrameMaker {
         return self
     }
 
-    // MARK: -  Size configuration
+    // MARK: -  Size Configuration
     
+    // MARK: -  Height Configuration
     @discardableResult
     func height(_ height: CGFloat) -> FrameMaker {
         guard view.superview != nil else {
@@ -427,6 +428,31 @@ public extension FrameMaker {
         verticalRelation.heightRect = heightDimension
         return self
     }
+    
+    @discardableResult
+    func height(to relationView: RelationView<DimensionRelationType>,
+                multiplier: CGFloat = 1) -> FrameMaker {
+        guard view.superview != nil else {
+            fatalError("❌ need to configure superview")
+        }
+        guard !verticalRelation.hasHeight else {
+            fatalError("❌ already configured height dimension")
+        }
+        let width = relationView.view.bounds.width
+        let height = relationView.view.bounds.height
+        let operation = BlockOperation { [unowned view] in
+            var value: CGFloat
+            switch relationView.relationType {
+            case .width:
+                value = width * multiplier
+            case .height:
+                value = height * multiplier
+            }
+            view.frame.size.height = value
+        }
+        defferedOperations.append(operation)
+        return self
+    }
 
     @discardableResult
     func width(_ width: CGFloat) -> FrameMaker {
@@ -445,11 +471,31 @@ public extension FrameMaker {
         guard view.superview != nil else {
             fatalError("❌ need to configure superview")
         }
+        guard !horizontalRelation.hasWidth else {
+            fatalError("❌ already configured width dimension")
+        }
         let widthDimension = to.bounds.width
         if horizontalRelation.hasX && realizedHorizontalRelations.contains(.right) {
             horizontalRelation.xRect = horizontalRelation.xRect - widthDimension
         }
         horizontalRelation.widthRect = widthDimension
+        return self
+    }
+    
+    @discardableResult
+    func width(to relationView:RelationView<DimensionRelationType>,
+               multiplier: CGFloat = 1) -> FrameMaker {
+        var value: CGFloat
+        switch relationView.relationType {
+        case .width:
+            value = relationView.view.bounds.width
+        case .height:
+            value = relationView.view.bounds.height
+        }
+        let operation = BlockOperation { [unowned self] in
+            view.frame.size.width = value * multiplier
+        }
+        defferedOperations.append(operation)
         return self
     }
 
@@ -497,6 +543,8 @@ public extension FrameMaker {
         verticalRelation.heightRect = view.frame.height
         return self
     }
+    
+    // MARK: -  Fitting Size
 
     @discardableResult
     func sizeToFit() -> FrameMaker {

@@ -28,9 +28,11 @@ public extension FrameMaker {
         else {
             fatalError("❌ need to configure superview")
         }
-        
-        horizontalRelation.xRect = superView.frame.minX + superView.safeAreaInsets.left + insets.left
-        verticalRelation.yRect = superView.frame.minY + superView.safeAreaInsets.top + insets.top
+
+
+        let converted = view.convert(superView.frame, to: view)
+        horizontalRelation.xRect = converted.minX + superView.safeAreaInsets.left + insets.left
+        verticalRelation.yRect = converted.minY + superView.safeAreaInsets.top + insets.top
         verticalRelation.heightRect = superView.frame.maxY - superView.frame.minY - (superView.safeAreaInsets.top + superView.safeAreaInsets.bottom) - (insets.bottom + insets.top)
         horizontalRelation.widthRect = superView.frame.maxX - superView.frame.minX - (insets.right + insets.left)
         return self
@@ -48,10 +50,10 @@ public extension FrameMaker {
         else {
             fatalError("❌ need to configure superview")
         }
-        horizontalRelation.xRect = view.frame.minX + view.safeAreaInsets.left + insets.left
-        verticalRelation.yRect = view.frame.minY + view.safeAreaInsets.top + insets.top
+        horizontalRelation.xRect = view.frame.minX + insets.left
+        verticalRelation.yRect = view.frame.minY + insets.top
         horizontalRelation.widthRect = view.frame.maxX - view.frame.minX - (insets.right + insets.left)
-        verticalRelation.heightRect = view.frame.maxY - view.frame.minY - (view.safeAreaInsets.top + view.safeAreaInsets.bottom) - (insets.bottom + insets.top)
+        verticalRelation.heightRect = view.frame.maxY - view.frame.minY - (insets.bottom + insets.top)
         return self
     }
     
@@ -194,6 +196,7 @@ public extension FrameMaker {
         } else {
             verticalRelation.yRect = superview.frame.maxY - inset
         }
+        realizedVerticalRelations.append(.bottom)
         return self
     }
 
@@ -207,6 +210,7 @@ public extension FrameMaker {
         } else {
             verticalRelation.yRect = superview.frame.maxY - inset - safeAreaInset.bottom
         }
+        realizedVerticalRelations.append(.bottom)
         return self
     }
     
@@ -221,6 +225,7 @@ public extension FrameMaker {
             horizontalRelation.widthRect = horizontalRelation.xRect - inset
         }
         horizontalRelation.xRect = superview.frame.minX + inset
+        realizedHorizontalRelations.append(.left)
         return self
     }
     
@@ -232,20 +237,18 @@ public extension FrameMaker {
                 horizontalRelation.widthRect = horizontalRelation.xRect - (relationView.view.frame.minX + inset)
             }
             horizontalRelation.xRect = relationView.view.frame.minX + inset
-            realizedHorizontalRelations.append(.left)
         case .right:
             if horizontalRelation.hasX {
                 horizontalRelation.widthRect = horizontalRelation.xRect - (relationView.view.frame.maxX + inset)
             }
             horizontalRelation.xRect = relationView.view.frame.maxX + inset
-            realizedHorizontalRelations.append(.left)
         case .centerX:
             if horizontalRelation.hasX {
                 horizontalRelation.widthRect = horizontalRelation.xRect - (relationView.view.center.x + inset)
             }
             horizontalRelation.xRect = relationView.view.center.x + inset
-            realizedHorizontalRelations.append(.left)
         }
+        realizedHorizontalRelations.append(.left)
         return self
     }
     
@@ -255,23 +258,25 @@ public extension FrameMaker {
     func right(to relationView: RelationView<HorizontalRelationType>, inset: CGFloat = 0) -> FrameMaker {
         switch relationView.relationType {
         case .left:
-            horizontalRelation.xRect = relationView.view.frame.minX + inset
-            realizedHorizontalRelations.append(.left)
+            if horizontalRelation.hasX {
+                horizontalRelation.widthRect = relationView.view.frame.minX - horizontalRelation.xRect - inset
+            } else {
+                horizontalRelation.xRect = relationView.view.frame.origin.x - inset
+            }
         case .right:
             if horizontalRelation.hasX {
                 horizontalRelation.widthRect = relationView.view.frame.maxX - inset - horizontalRelation.xRect
             } else {
                 horizontalRelation.xRect = relationView.view.frame.maxX - inset
             }
-            realizedHorizontalRelations.append(.right)
         case .centerX:
             if horizontalRelation.hasX {
                 horizontalRelation.widthRect = relationView.view.center.x - inset - horizontalRelation.xRect
             } else {
                 horizontalRelation.xRect = relationView.view.center.x - inset
             }
-            realizedHorizontalRelations.append(.right)
         }
+        realizedHorizontalRelations.append(.right)
         return self
     }
     
@@ -325,8 +330,10 @@ public extension FrameMaker {
         }
         let leftRect = relationView.view.frame.minX
         let rightRect = relationView.view.frame.maxX
-        let centerX = relationView.view.center.x
+
         let relationType = relationView.relationType
+        let centerX = relationView.view.convert(view.center, to: view).x
+
         let block = BlockOperation { [unowned view] in
             var value: CGFloat
             switch relationType {
@@ -362,7 +369,8 @@ public extension FrameMaker {
         guard view.superview != nil else {
             fatalError("❌ need to configure superview")
         }
-        let topRect = relationView.view.frame.minY
+        let converted = relationView.view.convert(view.frame, to: view)
+        let topRect = converted.minY
         let bottomRect = relationView.view.frame.maxY
         let centerY = relationView.view.center.y
         let relationType = relationView.relationType
@@ -440,13 +448,19 @@ public extension FrameMaker {
         }
         let width = relationView.view.bounds.width
         let height = relationView.view.bounds.height
-        let operation = BlockOperation { [unowned view] in
-            var value: CGFloat
-            switch relationView.relationType {
-            case .width:
-                value = width * multiplier
-            case .height:
-                value = height * multiplier
+        var value: CGFloat
+        switch relationView.relationType {
+        case .width:
+            value = width * multiplier
+        case .height:
+            value = height * multiplier
+        }
+
+        let operation = BlockOperation { [unowned view, unowned self] in
+            if realizedVerticalRelations.contains(.bottom) {
+                var minY = view.frame.origin.y
+                minY -= value
+                view.frame.origin.y = minY
             }
             view.frame.size.height = value
         }
@@ -513,6 +527,33 @@ public extension FrameMaker {
         verticalRelation.heightRect = height
         return self
     }
+    
+    @discardableResult
+    func size(_ size: CGSize) -> FrameMaker {
+        guard view.superview != nil else {
+            fatalError("❌ need to configure superview")
+        }
+        let block = BlockOperation { [unowned view, weak self] in
+            guard let self = self else {
+                return
+            }
+            if self.verticalRelation.hasY && self.realizedVerticalRelations.contains(.top) {
+                self.verticalRelation.yRect = self.verticalRelation.yRect - size.height
+            } else if self.verticalRelation.hasY && self.realizedVerticalRelations.contains(.bottom) {
+                self.verticalRelation.yRect = self.verticalRelation.yRect + size.height
+            }
+            
+            if self.realizedHorizontalRelations.contains(.right) {
+                var x = view.frame.origin.x
+                x -= size.width
+                view.frame.origin.x = x
+            }
+            self.horizontalRelation.widthRect = size.width
+            self.verticalRelation.heightRect = size.height
+        }
+        defferedOperations.append(block)
+        return self
+    }
 
     @discardableResult
     func squareSize(_ value: CGFloat) -> FrameMaker {
@@ -548,10 +589,27 @@ public extension FrameMaker {
 
     @discardableResult
     func sizeToFit() -> FrameMaker {
-        guard self.view.superview != nil else {
+        guard view.superview != nil else {
             fatalError("❌ need to configure superview")
         }
-        let block = BlockOperation { [unowned view] in view.sizeToFit() }
+        let block = BlockOperation { [unowned view, weak self] in
+            guard let self = self else {
+                return
+            }
+
+            view.sizeToFit()
+            if self.realizedHorizontalRelations.contains(.right),
+               !self.realizedHorizontalRelations.contains(.left) {
+                var x = self.view.frame.origin.x
+                x -= view.frame.width
+                view.frame.origin.x = x
+            } else if self.realizedVerticalRelations.contains(.bottom),
+                      !self.realizedVerticalRelations.contains(.top) {
+                var y = self.view.frame.origin.y
+                y -= self.view.bounds.height
+                view.frame.origin.y = y
+            }
+        }
         defferedOperations.append(block)
         return self
     }

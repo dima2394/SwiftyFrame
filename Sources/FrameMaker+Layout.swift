@@ -165,7 +165,7 @@ public extension FrameMaker {
         switch relationView.relationType {
         case .top:
             var converted = relationView.view.convert(view.frame, to: view)
-            if let superview = self.view.superview, superview === relationView.view {
+            if let superview = view.superview, superview === relationView.view {
                 converted = CGRect(origin: .zero, size: superview.frame.size)
             } else if let supervew = self.view.superview {
                 converted = supervew.convert(view.frame, from: relationView.view)
@@ -266,12 +266,18 @@ public extension FrameMaker {
     
     @discardableResult
     func left(to relationView: RelationView<HorizontalRelationType>, inset: CGFloat = 0) -> FrameMaker {
+        var converted = relationView.view.convert(view.frame, to: view)
+        if let superview = view.superview, superview === relationView.view {
+            converted = CGRect(origin: .zero, size: superview.frame.size)
+        } else if let supervew = self.view.superview {
+//            converted = supervew.convert(view.frame, from: relationView.view)
+        }
         switch relationView.relationType {
         case .left:
             if horizontalRelation.hasX {
                 horizontalRelation.widthRect = horizontalRelation.xRect - (relationView.view.frame.minX + inset)
             }
-            horizontalRelation.xRect = relationView.view.frame.minX + inset
+            horizontalRelation.xRect = converted.minX + inset
         case .right:
             if horizontalRelation.hasX {
                 horizontalRelation.widthRect = horizontalRelation.xRect - (relationView.view.frame.maxX + inset)

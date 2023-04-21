@@ -167,8 +167,6 @@ public extension FrameMaker {
             var converted = relationView.view.convert(view.frame, to: view)
             if let superview = view.superview, superview === relationView.view {
                 converted = CGRect(origin: .zero, size: superview.frame.size)
-            } else if let supervew = self.view.superview {
-                converted = supervew.convert(view.frame, from: relationView.view)
             }
             if verticalRelation.hasY {
                 verticalRelation.heightRect = verticalRelation.yRect - (converted.minY + inset)
@@ -195,8 +193,11 @@ public extension FrameMaker {
         }
         switch relationView.relationType {
         case .top:
-            verticalRelation.yRect = relationView.view.frame.minY - inset
-            realizedVerticalRelations.append(.bottom)
+            if verticalRelation.hasY {
+                verticalRelation.heightRect = (relationView.view.frame.minY - inset - verticalRelation.yRect)
+            } else {
+                verticalRelation.yRect = relationView.view.frame.minY - inset
+            }
         case .bottom:
             var converted = relationView.view.convert(view.frame, to: view)
             if let superview = self.view.superview, superview === relationView.view {
@@ -209,15 +210,14 @@ public extension FrameMaker {
             } else {
                 verticalRelation.yRect = converted.maxY - inset
             }
-            realizedVerticalRelations.append(.bottom)
         case .centerY:
             if verticalRelation.hasY {
                 verticalRelation.heightRect = (relationView.view.center.y - inset - verticalRelation.yRect)
             } else {
                 verticalRelation.yRect = relationView.view.center.y - inset
             }
-            realizedVerticalRelations.append(.bottom)
         }
+        realizedVerticalRelations.append(.bottom)
         return self
     }
     
@@ -269,9 +269,8 @@ public extension FrameMaker {
         var converted = relationView.view.convert(view.frame, to: view)
         if let superview = view.superview, superview === relationView.view {
             converted = CGRect(origin: .zero, size: superview.frame.size)
-        } else if let supervew = self.view.superview {
-//            converted = supervew.convert(view.frame, from: relationView.view)
         }
+
         switch relationView.relationType {
         case .left:
             if horizontalRelation.hasX {
@@ -567,7 +566,7 @@ public extension FrameMaker {
             if self.verticalRelation.hasY && self.realizedVerticalRelations.contains(.top) {
                 self.verticalRelation.yRect = self.verticalRelation.yRect - size.height
             } else if self.verticalRelation.hasY && self.realizedVerticalRelations.contains(.bottom) {
-                self.verticalRelation.yRect = self.verticalRelation.yRect + size.height
+                self.verticalRelation.yRect = self.verticalRelation.yRect - size.height
             }
 
             if self.realizedHorizontalRelations.contains(.right) {

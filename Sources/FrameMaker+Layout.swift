@@ -296,6 +296,10 @@ public extension FrameMaker {
     
     @discardableResult
     func right(to relationView: RelationView<HorizontalRelationType>, inset: CGFloat = 0) -> FrameMaker {
+        var converted = relationView.view.convert(view.frame, to: view)
+        if let superview = view.superview, superview === relationView.view {
+            converted = CGRect(origin: .zero, size: superview.frame.size)
+        }
         switch relationView.relationType {
         case .left:
             if horizontalRelation.hasX {
@@ -305,7 +309,8 @@ public extension FrameMaker {
             }
         case .right:
             if horizontalRelation.hasX {
-                horizontalRelation.widthRect = relationView.view.frame.maxX - inset - horizontalRelation.xRect
+                let width: CGFloat = converted.maxX - inset - horizontalRelation.xRect
+                horizontalRelation.widthRect = width
             } else {
                 horizontalRelation.xRect = relationView.view.frame.maxX - inset
             }
@@ -395,7 +400,8 @@ public extension FrameMaker {
         guard let superview = view.superview else {
             fatalError("❌ need to configure superview")
         }
-        let centerX = superview.center.x
+        let converted = CGRect(origin: .zero, size: superview.frame.size)
+        let centerX = converted.midX
         let block = BlockOperation { [unowned view] in
             view.center.x = centerX - offset
         }

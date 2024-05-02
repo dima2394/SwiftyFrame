@@ -384,8 +384,6 @@ public extension FrameMaker {
         var converted = relationView.view.convert(view.frame, to: view)
         if let superview = self.view.superview, superview === relationView.view {
             converted = CGRect(origin: .zero, size: relationView.view.bounds.size)
-        } else if let supervew = self.view.superview {
-            converted = supervew.convert(view.frame, from: relationView.view)
         }
         converted.size = relationView.view.bounds.size
         let centerX = converted.midX

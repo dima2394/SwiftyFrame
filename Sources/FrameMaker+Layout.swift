@@ -201,10 +201,11 @@ public extension FrameMaker {
         case .bottom:
             var converted = relationView.view.convert(view.frame, to: view)
             if let superview = self.view.superview, superview === relationView.view {
-                converted = CGRect(origin: .zero, size: superview.frame.size)
+                converted = CGRect(origin: .zero, size: relationView.view.bounds.size)
             } else if let supervew = self.view.superview {
                 converted = supervew.convert(view.frame, from: relationView.view)
             }
+            converted.size = relationView.view.bounds.size
             if verticalRelation.hasY {
                 verticalRelation.heightRect = (converted.maxY - inset - verticalRelation.yRect)
             } else {
@@ -359,7 +360,10 @@ public extension FrameMaker {
         guard let superview = view.superview else {
             fatalError("❌ need to configure superview")
         }
-        let center = superview.center
+
+        let converted = CGRect(origin: .zero, size: superview.frame.size)
+        let center = CGPoint(x: converted.midX,
+                             y: converted.midY)
         let block = BlockOperation { [unowned view] in
             view.center = center
         }
@@ -377,7 +381,14 @@ public extension FrameMaker {
         let rightRect = relationView.view.frame.maxX
 
         let relationType = relationView.relationType
-        let centerX = relationView.view.convert(view.center, to: view).x
+        var converted = relationView.view.convert(view.frame, to: view)
+        if let superview = self.view.superview, superview === relationView.view {
+            converted = CGRect(origin: .zero, size: relationView.view.bounds.size)
+        } else if let supervew = self.view.superview {
+            converted = supervew.convert(view.frame, from: relationView.view)
+        }
+        converted.size = relationView.view.bounds.size
+        let centerX = converted.midX
 
         let block = BlockOperation { [unowned view] in
             var value: CGFloat

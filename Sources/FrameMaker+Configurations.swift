@@ -11,7 +11,6 @@ public extension FrameMaker {
     
     static func configure(view: UIView, configurationBlock: ConfigurationBlock) {
         let maker = FrameMaker(view: view)
-        
         configurationBlock(maker)
         
         maker.defferedOperations.forEach { $0.start() }

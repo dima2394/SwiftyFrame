@@ -36,6 +36,17 @@ public extension Collection where Element == UIView {
 
 // MARK: -  FrameMaker
 
+public extension Collection where Element == UIView {
+
+    /// Let's configure frame for collection of views with SwiftyFrame.
+    /// - Parameter configurationBlock: configure view frame `here`...`inside`...'
+    func frame(configurationBlock: ConfigurationBlock) {
+        forEach {
+            FrameMaker.configure(view: $0, configurationBlock: configurationBlock)
+        }
+    }
+}
+
 public extension UIView {
     
     /// Let's configure view's frame with SwiftyFrame.

@@ -383,7 +383,10 @@ public extension FrameMaker {
         guard view.superview != nil else {
             fatalError("❌ need to configure superview")
         }
-        let converted = relationView.view.convert(view.frame, to: view)
+        var converted = relationView.view.convert(view.frame, to: view)
+        if let superview = self.view.superview, superview === relationView.view {
+            converted = CGRect(origin: .zero, size: relationView.view.bounds.size)
+        }
         let topRect = converted.minY
         let bottomRect = relationView.view.frame.maxY
         let centerY = relationView.view.center.y

@@ -209,13 +209,8 @@ public extension FrameMaker {
         guard let superview = view.superview else {
             fatalError("❌ need to configure superview")
         }
-        if verticalRelation.hasY {
-            verticalRelation.heightRect = superview.frame.maxY - verticalRelation.yRect - inset - safeAreaInset.bottom
-        } else {
-            verticalRelation.yRect = superview.frame.maxY - inset - safeAreaInset.bottom
-        }
-        realizedVerticalRelations.append(.bottom)
-        return self
+
+        return bottom(to: superview.bottom, inset: safeAreaInset.bottom)
     }
     
     // MARK: -  Left Relation Configuration
@@ -422,9 +417,7 @@ public extension FrameMaker {
         guard view.superview != nil else {
             fatalError("❌ need to configure superview")
         }
-        guard !verticalRelation.hasHeight else {
-            fatalError("❌ already configured height dimension")
-        }
+        
         if verticalRelation.hasY && realizedVerticalRelations.contains(.bottom) {
             verticalRelation.yRect = verticalRelation.yRect - height
         }

@@ -210,7 +210,7 @@ public extension FrameMaker {
             fatalError("❌ need to configure superview")
         }
 
-        return bottom(to: superview.bottom, inset: safeAreaInset.bottom)
+        return bottom(to: superview.bottom, inset: safeAreaInset.bottom + inset)
     }
     
     // MARK: -  Left Relation Configuration

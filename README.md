@@ -16,5 +16,5 @@ A lightweight, chainable layout framework that makes manual frame calculations s
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/dima2394/SwiftyFrame.git", from: "1.0.0")
+    .package(url: "https://github.com/dima2394/SwiftyFrame.git", from: "0.3.6")
 ]

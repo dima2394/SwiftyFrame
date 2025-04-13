@@ -106,7 +106,10 @@ public extension FrameMaker {
     }
     
     // MARK: -  Top Relation Configuration
-    
+
+    /// Configures the top edge of the view relative to its superview's top edge.
+    /// - Parameter inset: The inset from the superview's top edge. Default is `0`.
+    /// - Returns: `FrameMaker` instance for chainable syntax.
     @discardableResult
     func top(inset: CGFloat = 0) -> FrameMaker {
         guard let superview = view.superview else {
@@ -116,6 +119,11 @@ public extension FrameMaker {
         return top(to: superview.top, inset: inset)
     }
 
+    /// Configures the top edge of the view relative to the safe area's top edge.
+    /// - Parameters:
+    ///   - safeArea: A `SafeArea` instance to reference the safe area insets.
+    ///   - inset: The inset from the safe area's top edge. Default is `0`.
+    /// - Returns: `FrameMaker` instance for chainable syntax.
     @discardableResult
     func top(to safeArea: SafeArea, inset: CGFloat = 0) -> FrameMaker {
         guard let superview = view.superview else {
@@ -130,6 +138,11 @@ public extension FrameMaker {
         return self
     }
 
+    /// Configures the top edge of the view relative to another view's edge or center.
+    /// - Parameters:
+    ///   - relationView: The target view and relation type (top, bottom, or centerY).
+    ///   - inset: The inset from the target edge. Default is `0`.
+    /// - Returns: `FrameMaker` instance for chainable syntax.
     @discardableResult
     func top(to relationView: RelationView<VerticalRelationType>, inset: CGFloat = 0) -> FrameMaker {
         guard view.superview != nil else {
@@ -158,7 +171,12 @@ public extension FrameMaker {
     }
     
     // MARK: -  Bottom Relation Configuration
-    
+
+    /// Configures the bottom edge of the view relative to another view's edge or center.
+    /// - Parameters:
+    ///   - relationView: The target view and relation type (top, bottom, or centerY).
+    ///   - inset: The inset from the target edge. Default is `0`.
+    /// - Returns: `FrameMaker` instance for chainable syntax.
     @discardableResult
     func bottom(to relationView: RelationView<VerticalRelationType>, inset: CGFloat = 0) -> FrameMaker {
         guard view.superview != nil else {
@@ -194,7 +212,10 @@ public extension FrameMaker {
         realizedVerticalRelations.append(.bottom)
         return self
     }
-    
+
+    /// Configures the bottom edge of the view relative to its superview's bottom edge.
+    /// - Parameter inset: The inset from the superview's bottom edge. Default is `0`.
+    /// - Returns: `FrameMaker` instance for chainable syntax.
     @discardableResult
     func bottom(inset: CGFloat = 0) -> FrameMaker {
         guard let superview = view.superview else {
@@ -204,6 +225,11 @@ public extension FrameMaker {
         return bottom(to: superview.bottom, inset: inset)
     }
 
+    /// Configures the bottom edge of the view relative to the safe area's bottom edge.
+    /// - Parameters:
+    ///   - safeArea: A `SafeArea` instance to reference the safe area insets.
+    ///   - inset: The inset from the safe area's bottom edge. Default is `0`.
+    /// - Returns: `FrameMaker` instance for chainable syntax.
     @discardableResult
     func bottom(to safeArea: SafeArea, inset: CGFloat = 0) -> FrameMaker {
         guard let superview = view.superview else {
@@ -214,7 +240,10 @@ public extension FrameMaker {
     }
     
     // MARK: -  Left Relation Configuration
-    
+
+    /// Configures the left edge of the view relative to its superview's left edge.
+    /// - Parameter inset: The inset from the superview's left edge. Default is `0`.
+    /// - Returns: `FrameMaker` instance for chainable syntax.
     @discardableResult
     func left(inset: CGFloat = 0) -> FrameMaker {
         guard let superview = view.superview else {
@@ -223,7 +252,12 @@ public extension FrameMaker {
 
         return left(to: superview.left, inset: inset)
     }
-    
+
+    /// Configures the left edge of the view relative to another view's edge or center.
+    /// - Parameters:
+    ///   - relationView: The target view and relation type (left, right, or centerX).
+    ///   - inset: The inset from the target edge. Default is `0`.
+    /// - Returns: `FrameMaker` instance for chainable syntax.
     @discardableResult
     func left(to relationView: RelationView<HorizontalRelationType>, inset: CGFloat = 0) -> FrameMaker {
         var converted = relationView.view.convert(view.frame, to: view)
@@ -253,7 +287,12 @@ public extension FrameMaker {
     }
     
     // MARK: -  Right Relation Configuration
-    
+
+    /// Configures the right edge of the view relative to another view's edge or center.
+    /// - Parameters:
+    ///   - relationView: The target view and relation type (left, right, or centerX).
+    ///   - inset: The inset from the target edge. Default is `0`.
+    /// - Returns: `FrameMaker` instance for chainable syntax.
     @discardableResult
     func right(to relationView: RelationView<HorizontalRelationType>, inset: CGFloat = 0) -> FrameMaker {
         var converted = relationView.view.convert(view.frame, to: view)
@@ -284,7 +323,10 @@ public extension FrameMaker {
         realizedHorizontalRelations.append(.right)
         return self
     }
-    
+
+    /// Configures the right edge of the view relative to its superview's right edge.
+    /// - Parameter inset: The inset from the superview's right edge. Default is `0`.
+    /// - Returns: `FrameMaker` instance for chainable syntax.
     @discardableResult
     func right(inset: CGFloat = 0) -> FrameMaker {
         guard let superview = view.superview else {
@@ -296,6 +338,10 @@ public extension FrameMaker {
     
     // MARK: -  Center Relations
     // MARK: -  Center
+
+    /// Centers the view inside another view.
+    /// - Parameter relationView: The target view to center in.
+    /// - Returns: `FrameMaker` instance for chainable syntax.
     @discardableResult
     func center(to relationView: UIView) -> FrameMaker {
         guard view.superview != nil else {
@@ -308,7 +354,9 @@ public extension FrameMaker {
         defferedOperations.append(block)
         return self
     }
-    
+
+    /// Centers the view inside its superview.
+    /// - Returns: `FrameMaker` instance for chainable syntax.
     @discardableResult
     func center() -> FrameMaker {
         guard let superview = view.superview else {
@@ -326,6 +374,12 @@ public extension FrameMaker {
     }
     
     // MARK: -  Center X
+
+    /// Configures the horizontal center (centerX) of the view relative to another view's edge or center.
+    /// - Parameters:
+    ///   - relationView: The target view and relation type (left, right, or centerX).
+    ///   - offset: The offset from the target position. Default is `0`.
+    /// - Returns: `FrameMaker` instance for chainable syntax.
     @discardableResult
     func centerX(to relationView: RelationView<HorizontalRelationType>, offset: CGFloat = 0) -> FrameMaker {
         guard view.superview != nil else {
@@ -357,7 +411,10 @@ public extension FrameMaker {
         defferedOperations.append(block)
         return self
     }
-    
+
+    /// Centers the view horizontally (centerX) inside its superview.
+    /// - Parameter offset: The offset from the center. Default is `0`.
+    /// - Returns: `FrameMaker` instance for chainable syntax.
     @discardableResult
     func centerX(offset: CGFloat = 0) -> FrameMaker {
         guard let superview = view.superview else {
@@ -373,6 +430,12 @@ public extension FrameMaker {
     }
     
     // MARK: -  Center Y
+
+    /// Configures the vertical center (centerY) of the view relative to another view's edge or center.
+    /// - Parameters:
+    ///   - relationView: The target view and relation type (top, bottom, or centerY).
+    ///   - offset: The offset from the target position. Default is `0`.
+    /// - Returns: `FrameMaker` instance for chainable syntax.
     @discardableResult
     func centerY(to relationView: RelationView<VerticalRelationType>, offset: CGFloat = 0) -> FrameMaker {
         guard view.superview != nil else {
@@ -401,7 +464,10 @@ public extension FrameMaker {
         defferedOperations.append(block)
         return self
     }
-    
+
+    /// Centers the view vertically (centerY) inside its superview.
+    /// - Parameter offset: The offset from the center. Default is `0`.
+    /// - Returns: `FrameMaker` instance for chainable syntax.
     @discardableResult
     func centerY(offset: CGFloat = 0) -> FrameMaker {
         guard let superview = view.superview else {
@@ -412,6 +478,10 @@ public extension FrameMaker {
     }
     
     // MARK: -  Height Configuration
+
+    /// Sets a fixed height for the view.
+    /// - Parameter height: The height value.
+    /// - Returns: `FrameMaker` instance for chainable syntax.
     @discardableResult
     func height(_ height: CGFloat) -> FrameMaker {
         guard view.superview != nil else {
@@ -425,6 +495,9 @@ public extension FrameMaker {
         return self
     }
 
+    /// Matches the height of the view to another view's height.
+    /// - Parameter to: The target view to match height with.
+    /// - Returns: `FrameMaker` instance for chainable syntax.
     @discardableResult
     func height(equal to: UIView) -> FrameMaker {
         guard view.superview != nil else {
@@ -440,7 +513,12 @@ public extension FrameMaker {
         verticalRelation.heightRect = heightDimension
         return self
     }
-    
+
+    /// Configures the height of the view relative to another view's dimension (width or height).
+    /// - Parameters:
+    ///   - relationView: The target view and dimension type (width or height).
+    ///   - multiplier: The multiplier for the target dimension. Default is `1`.
+    /// - Returns: `FrameMaker` instance for chainable syntax.
     @discardableResult
     func height(to relationView: RelationView<DimensionRelationType>,
                 multiplier: CGFloat = 1) -> FrameMaker {
@@ -472,6 +550,9 @@ public extension FrameMaker {
         return self
     }
 
+    /// Sets a fixed width for the view.
+    /// - Parameter width: The width value.
+    /// - Returns: `FrameMaker` instance for chainable syntax.
     @discardableResult
     func width(_ width: CGFloat) -> FrameMaker {
         guard view.superview != nil else {
@@ -483,7 +564,10 @@ public extension FrameMaker {
         horizontalRelation.widthRect = width
         return self
     }
-    
+
+    /// Matches the width of the view to another view's width.
+    /// - Parameter to: The target view to match width with.
+    /// - Returns: `FrameMaker` instance for chainable syntax.
     @discardableResult
     func width(equal to: UIView) -> FrameMaker {
         guard view.superview != nil else {
@@ -499,7 +583,12 @@ public extension FrameMaker {
         horizontalRelation.widthRect = widthDimension
         return self
     }
-    
+
+    /// Configures the width of the view relative to another view's dimension (width or height).
+    /// - Parameters:
+    ///   - relationView: The target view and dimension type (width or height).
+    ///   - multiplier: The multiplier for the target dimension. Default is `1`.
+    /// - Returns: `FrameMaker` instance for chainable syntax.
     @discardableResult
     func width(to relationView:RelationView<DimensionRelationType>,
                multiplier: CGFloat = 1) -> FrameMaker {
@@ -519,6 +608,9 @@ public extension FrameMaker {
 
     // MARK: -  Size Configuration
 
+    /// Sets the size of the view using a `CGSize` value.
+    /// - Parameter size: The target size.
+    /// - Returns: `FrameMaker` instance for chainable syntax.
     @discardableResult
     func size(_ size: CGSize) -> FrameMaker {
         guard view.superview != nil else {
@@ -546,17 +638,27 @@ public extension FrameMaker {
         return self
     }
 
-
+    /// Sets the size of the view using width and height values.
+    /// - Parameters:
+    ///   - width: The target width.
+    ///   - height: The target height.
+    /// - Returns: `FrameMaker` instance for chainable syntax.
     @discardableResult
     func size(width: CGFloat, height: CGFloat) -> FrameMaker {
         size(CGSize(width: width, height: height))
     }
 
+    /// Sets a square size for the view.
+    /// - Parameter value: The width and height value.
+    /// - Returns: `FrameMaker` instance for chainable syntax.
     @discardableResult
     func squareSize(_ value: CGFloat) -> FrameMaker {
         size(CGSize(width: value, height: value))
     }
-    
+
+    /// Matches the size of the view to another view's size.
+    /// - Parameter view: The target view to match size with.
+    /// - Returns: `FrameMaker` instance for chainable syntax.
     @discardableResult
     func size(equalTo view: UIView) -> FrameMaker {
         size(CGSize(width: view.bounds.width, height: view.bounds.height))
@@ -564,6 +666,8 @@ public extension FrameMaker {
     
     // MARK: -  Fitting Size
 
+    /// Adjusts the view's size to fit its content.
+    /// - Returns: `FrameMaker` instance for chainable syntax.
     @discardableResult
     func sizeToFit() -> FrameMaker {
         guard view.superview != nil else {
@@ -590,7 +694,10 @@ public extension FrameMaker {
         defferedOperations.append(block)
         return self
     }
-    
+
+    /// Adjusts the view's width to fit its content, with an optional maximum width.
+    /// - Parameter max: The maximum allowed width. Default is `.greatestFiniteMagnitude`.
+    /// - Returns: `FrameMaker` instance for chainable syntax.
     @discardableResult
     func widthToFit(max: CGFloat = .greatestFiniteMagnitude) -> FrameMaker {
         guard view.superview != nil else {
@@ -604,6 +711,9 @@ public extension FrameMaker {
         return self
     }
 
+    /// Adjusts the view's height to fit its content, with an optional maximum height.
+    /// - Parameter max: The maximum allowed height. Default is `.greatestFiniteMagnitude`.
+    /// - Returns: `FrameMaker` instance for chainable syntax.
     @discardableResult
     func heightToFit(max: CGFloat = .greatestFiniteMagnitude) -> FrameMaker {
         guard view.superview != nil else {
@@ -627,7 +737,10 @@ public extension FrameMaker {
     }
     
     // MARK: -  Layout Helpers
-    
+
+    /// Applies a corner radius to the view.
+    /// - Parameter value: The corner radius value.
+    /// - Returns: `FrameMaker` instance for chainable syntax.
     @discardableResult
     func cornerRadius(_ value: CGFloat) -> FrameMaker {
         guard view.superview != nil else {
@@ -640,7 +753,12 @@ public extension FrameMaker {
         defferedOperations.append(block)
         return self
     }
-    
+
+    /// Applies a corner radius relative to the view's width or height.
+    /// - Parameters:
+    ///   - dimensionType: The dimension type (width or height) to base the radius on.
+    ///   - multiplier: The multiplier for the dimension. Default is `1.0`.
+    /// - Returns: `FrameMaker` instance for chainable syntax.
     @discardableResult
     func cornerRadius(_ dimensionType: DimensionRelationType, multiplier: CGFloat = 1.0) -> FrameMaker {
         guard view.superview != nil else {
